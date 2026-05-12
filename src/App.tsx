@@ -16,8 +16,6 @@ import {
 } from 'lucide-react';
 import { User, Lesson, Quiz, ScoreEntry } from './types';
 
-// --- Constants & Helpers ---
-
 const SOUNDS = {
   correct: 'https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3',
   wrong: 'https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'
@@ -37,8 +35,6 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   }
   return newArray;
 };
-
-// --- Components ---
 
 const Navbar = ({ user, onLogout, onNavigate }: { user: User | null, onLogout: () => void, onNavigate: (page: string) => void }) => (
   <nav className="bg-white/80 backdrop-blur-md border-b border-zinc-200/50 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
@@ -926,9 +922,10 @@ const CrosswordGame = ({ onComplete }: { onComplete: (score: number) => void }) 
             ))}
           </div>
           
-          <input 
+          <input
             autoFocus
             type="text"
+            dir="ltr"
             value={input}
             disabled={isRevealing}
             onChange={(e) => setInput(e.target.value.slice(0, clues[currentIdx].answer.length))}
@@ -954,8 +951,6 @@ const CrosswordGame = ({ onComplete }: { onComplete: (score: number) => void }) 
 };
 
 
-// --- Main App ---
-
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [page, setPage] = useState('home');
@@ -965,13 +960,11 @@ export default function App() {
 
   useEffect(() => {
     const savedId = localStorage.getItem('aniclass_user_id');
-    // Basic validation to avoid fetching "null" or "undefined" as strings
     if (savedId && savedId !== 'null' && savedId !== 'undefined') {
       fetch(`/api/user/${savedId}`)
         .then(async res => {
           if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
-            // If user not found, we just want to clear the session silently
             if (res.status === 404) {
               localStorage.removeItem('aniclass_user_id');
               return null;
